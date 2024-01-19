@@ -1,7 +1,14 @@
+
 App = {
   web3Provider: null,
   contracts: {},
-
+  carPhotos: {
+    "Bmw": "images/bmwm5.jpg",
+    "honda civic": "images/hondaCivic.jpg",
+    "camaro": "images/camaro.jpg",
+    // Add more image URLs as needed
+  },
+  defaultPhotoUrl: "images/fordFusion.jpg",
   init: function() {
     // Initialize web3 and contracts
     return App.initWeb3();
@@ -81,7 +88,14 @@ App = {
         carTemplate.find('.btn-rent').attr('data-id', info[6]);
         carTemplate.find('.btn-return').attr('data-id', info[6]);
         carTemplate.find('.btn-rent').attr('disabled', !isAvailable);
-        // Add a click event to the Display Info button
+
+        // Get car type from the smart contract response (adjust the index based on your contract structure)
+
+        var carTypePhotoUrl = App.carPhotos[make] || App.defaultPhotoUrl;
+
+        // Set the image source to the corresponding photo URL
+        carTemplate.find('.img-rounded').attr('src', carTypePhotoUrl);
+
         carTemplate.find('.btn-displayInfo').click(function() {
           App.displayCarInfo(info);
         });
@@ -192,7 +206,7 @@ App = {
     $(document).on('click', '.btn-rent', App.handleRent);
     $(document).on('click', '.btn-return', App.handleReturnCar);
     $(document).on('click', '.btn-addCar', App.handleAddCar);
-  
+
     // Event listener for displaying car info in a modal
     $(document).on('click', '.btn-displayInfo', function(event) {
       // Get the relevant car information from the clicked card
@@ -201,7 +215,7 @@ App = {
       var year = carPanel.find('.car-year').text();
       var license = carPanel.find('.car-licenseNumber').text();
       var isAvailable = carPanel.find('.car-isAvailable').text();
-  
+
       // Construct the modal content with car information
       var modalContent = `
         <div class="modal fade" id="carInfoModal" tabindex="-1" role="dialog" aria-labelledby="carInfoModalLabel" aria-hidden="true">
@@ -223,7 +237,7 @@ App = {
           </div>
         </div>
       `;
-  
+
       // Append the modal content to the body and show the modal
       $('body').append(modalContent);
       $('#carInfoModal').modal('show');
